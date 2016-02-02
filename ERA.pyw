@@ -31,6 +31,7 @@ import json
 import os
 import platform
 import logging
+import codecs
 from utils import EVEDir
 
 # Do initial checks, code taken from Pyfa... cause that shit rocks
@@ -263,11 +264,10 @@ class StartHOSTILE(Thread):
 	# setup our log file watcher, only open it once and update when a new line is written
 	def hostile_watch(self, logfile):
 
-		fp = open(logfile, 'r')
+		fp = codecs.open(logfile, 'r', encoding='utf-16-le')
 		while self._want_abort == 0:
 
-			# remove null padding (lol ccp)
-			new = re.sub(r'[^\x20-\x7e]', '', fp.readline())
+			new = fp.readline()
 
 			if new:
 				relevant_system = self.find_system_in_string(new)
@@ -414,7 +414,7 @@ class StartLOOT(Thread):
 
 		self.interval = int(era.check_interval.GetValue()) * 2
 
-		fp = open(fn, 'r')
+		fp = codecs.open(fn, 'r', encoding='utf-16-le')
 		while self._want_abort == 0:
 			new = fp.readline()
 
